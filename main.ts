@@ -64,7 +64,7 @@ export default class MoveTasks extends Plugin {
 	}
 }
 
-class MoveTaskSettingTab extends PluginSettingTab {
+class MoveTasksSettingTab extends PluginSettingTab {
 	plugin: MoveTasks;
 
 	constructor(app: App, plugin: MoveTasks) {
