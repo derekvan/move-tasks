@@ -41,10 +41,21 @@ export default class MoveTasks extends Plugin {
 				
 				const a = filterItems(notesArray,"\t- ");
 				const subTasks = a.join('\n');  
+				const subNumber = subTasks.split('\n').length
 				
 				content = "- " + content.replace(/^\s*[\r\n]/gm,"") + "\n" + subTasks.replace(/^\s*[\r\n]/gm,"")
 				
-				const newDoc = doc.replace(content,"").replace("# Inbox\n","# Inbox\n\n").trim();
+				let num = 0
+				if (subTasks){
+					num = subNumber + 1
+				}
+				else{
+					num = 1
+				}
+
+				editor.replaceRange("",{"line":editor.getCursor().line,"ch":0},{"line":editor.getCursor().line+num,"ch":0})
+				
+				const newDoc = view.getViewData();
 				const re = new RegExp("\\[ \\] ")
 				let icon = ""
 				if(content.match(re)){
