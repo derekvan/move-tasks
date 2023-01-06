@@ -27,7 +27,7 @@ export default class MoveTasks extends Plugin {
 				let content = "";
 				const line = editor.getLine(editor.getCursor().line);
 				content = line
-				content = content.replace(/^- /,"");
+				content = content.replace(/^- /,"")
 				const tasks = doc.split("\n- ");
 				const lines = tasks.find(a => a.includes(content))
 				const notesArray = lines.split('\n')
@@ -35,17 +35,25 @@ export default class MoveTasks extends Plugin {
 				
 				function filterItems(arr, query) {
 					return arr.filter(function(el) {
-					return el.toLowerCase().indexOf(query.toLowerCase()) !== -1
+						return el.toLowerCase().indexOf(query.toLowerCase()) !== -1
 					})
 				}
-
+				
 				const a = filterItems(notesArray,"\t- ");
 				const subTasks = a.join('\n');  
-
+				
 				content = "- " + content.replace(/^\s*[\r\n]/gm,"") + "\n" + subTasks.replace(/^\s*[\r\n]/gm,"")
-
+				
 				const newDoc = doc.replace(content,"").replace("# Inbox\n","# Inbox\n\n").trim();
-				const newText = newDoc.replace(this.settings.header+"\n", this.settings.header+"\n\n" + "- [ ] "+ content.slice(2) + "\n")
+				const re = new RegExp("\\[ \\] ")
+				let icon = ""
+				if(content.match(re)){
+					icon = "- "
+				}
+				else{
+					icon = "- [ ] "
+				}
+				const newText = newDoc.replace(this.settings.header+ "\n", this.settings.header+ "\n\n" + icon + content.slice(2))
 
 				view.setViewData(newText,false)
 			}
@@ -83,7 +91,7 @@ class MoveTasksSettingTab extends PluginSettingTab {
 			.setName('Header')
 			.setDesc('Which Header to Move Tasks To?')
 			.addText(text => text
-				.setPlaceholder('')
+				.setPlaceholder('# Now')
 				.setValue(this.plugin.settings.header)
 				.onChange(async (value) => {
 					console.log('Secret: ' + value);
